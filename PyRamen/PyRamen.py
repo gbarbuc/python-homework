@@ -6,8 +6,10 @@ import csv
 from pathlib import Path
 
 # @TODO: Set file paths for menu_data.csv and sales_data.csv
-menu_filepath = Path('C:\Users\George\python-homework\PyRamen\Resources')
-sales_filepath = Path('C:\Users\George\python-homework\PyRamen\Resources')
+menu_filepath = Path("C:/Users/George/python-projects/PyRamen/Resources/menu_data.csv")
+sales_filepath = Path("C:/Users/George/python-projects/PyRamen/Resources/sales_data.csv")
+report_filepath = Path("C:/Users/George/python-projects/PyRamen/Resources/report.txt")
+
 
 # @TODO: Initialize list objects to hold our menu and sales data
 menu = []
@@ -15,94 +17,49 @@ sales = []
 
 # @TODO: Read in the menu data into the menu list
 
-with open('menu_data.csv', newline='') as f:
-    reader = csv.reader(f)
-    data = list(reader)
+with open(menu_filepath, newline='') as fm:
 
-print(data)
-
-
-
-
-
-
-
+    menu = list(csv.reader(fm))
 
 # @TODO: Read in the sales data into the sales list
+with open(sales_filepath, newline='') as fs:
 
+    sales = list(csv.reader(fs))
+    
 
-
-
-
-
-
-
-
-
+    
 # @TODO: Initialize dict object to hold our key-value pairs of items and metrics
 report = {}
 
-# Initialize a row counter variable
-row_count = 0
+"""
+GBa - Scan throu the menu and sales. If item was sold in the past add it to the report. 
+     If the item is already in the report update metrics
+"""
 
-# @TODO: Loop over every row in the sales list object
-
-
-
-
-    # Line_Item_ID,Date,Credit_Card_Number,Quantity,Menu_Item
-    # @TODO: Initialize sales data variables
-
-
-    # @TODO:
-    # If the item value not in the report, add it as a new entry with initialized metrics
-    # Naming convention allows the keys to be ordered in logical fashion, count, revenue, cost, profit
-
-
-
-
-
-
-
-
-    # @TODO: For every row in our sales data, loop over the menu records to determine a match
+for menu_item in menu:
+    first=True
+    for sales_item in sales:
+        if sales_item[4]==menu_item[0]:
+            if first:
+                report.update({menu_item[0]:{"01-count":int(sales_item[3]),
+                                            "02-revenue":int(sales_item[3])*(int(menu_item[3])),
+                                             "03-cogs":int(sales_item[3])*int(menu_item[4]),
+                                             "04-profit":int(sales_item[3])*(int(menu_item[3])-int(menu_item[4]))
+                                            }})
+                first=False
+            else:
+                report[menu_item[0]]["01-count"] += int(sales_item[3])
+                report[menu_item[0]]["02-revenue"] += int(sales_item[3]) * (int(menu_item[3]))
+                report[menu_item[0]]["03-cogs"] += int(sales_item[3]) * int(menu_item[4])
+                report[menu_item[0]]["04-profit"] += int(sales_item[3]) * (int(menu_item[3]) - int(menu_item[4]))
 
 
-        # Item,Category,Description,Price,Cost
-        # @TODO: Initialize menu data variables
+for key,val in report.items():
+    print(key,val,'\n')
+    
+print (len(sales))
 
+f = open(report_filepath,"w")
+f.write(str(report))
+f.close()
 
-
-
-        # @TODO: Calculate profit of each item in the menu data
-
-
-        # @TODO: If the item value in our sales data is equal to the any of the items in the menu, then begin tracking metrics for that item
-
-
-            # @TODO: Print out matching menu data
-
-
-
-
-
-
-            # @TODO: Cumulatively add up the metrics for each item key
-
-
-
-
-
-        # @TODO: Else, the sales item does not equal any fo the item in the menu data, therefore no match
-
-
-
-    # @TODO: Increment the row counter by 1
-
-
-# @TODO: Print total number of records in sales data
-
-
-
-
-# @TODO: Write out report to a text file (won't appear on the command line output)
